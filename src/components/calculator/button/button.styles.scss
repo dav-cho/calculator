@@ -1,0 +1,33 @@
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 1%;
+  width: 20%;
+  height: 3rem;
+
+  border-style: solid;
+  // border: none;
+  border-radius: 0.5em;
+
+  background-color: lightgray;
+  cursor: pointer;
+
+  // change classes to just 'button' for valid and 'button invalid' for invalid?
+  &:hover {
+    background-color: lightblue;
+  }
+
+  &.valid {
+    &:hover {
+      background-color: lightgreen;
+    }
+  }
+
+  &.invalid {
+    &:hover {
+      background-color: rgb(240, 106, 106);
+    }
+  }
+}

@@ -1,0 +1,19 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 2rem;
+
+  background-color: gray;
+
+  .title {
+    margin: 0 1rem;
+  }
+
+  .links {
+    a {
+      margin: 0 1rem;
+    }
+  }
+}
