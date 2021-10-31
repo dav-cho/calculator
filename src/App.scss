@@ -1,4 +1,20 @@
 .App {
   height: 100vh;
   text-align: center;
+
+  font-family: 'Lato', sans-serif;
+
+  input {
+    font-family: 'Lato', sans-serif;
+  }
+
+  a {
+    color: black;
+    text-decoration: none;
+
+    &:hover {
+      color: red;
+      text-decoration: underline;
+    }
+  }
 }

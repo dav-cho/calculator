@@ -13,5 +13,9 @@
 
     text-align: end;
     font-size: 1.5rem;
+
+    &.invalid {
+      color: red;
+    }
   }
 }

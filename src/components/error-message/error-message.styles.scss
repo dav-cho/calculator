@@ -1,0 +1,23 @@
+.error-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 45%;
+  margin: 2rem auto 0 auto;
+  padding: 1.5rem 3rem;
+
+  border-radius: 0.5rem;
+
+  background-color: lightgray;
+  color: red;
+  font-size: 2rem;
+
+  svg {
+    height: 3rem;
+    width: 3rem;
+    margin-right: 1rem;
+
+    fill: red;
+  }
+}
