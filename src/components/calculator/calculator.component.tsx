@@ -1,58 +1,114 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+
+import { filterInput, calculate } from './calculator';
+import { checkValidInputValue } from './calculator.utils';
+import { useErrorMessageContext } from '../../contexts/error-message.context';
 
 import { Display } from './display/display.component';
 import { Controls } from './controls/controls.component';
 
-import { checkButtonValueType } from './calculator.utils';
-
 import './calculator.styles.scss';
 
-export const Calculator = () => {
+interface CalculatorProps {
+  helpModalOpen: boolean;
+}
+
+export const Calculator = ({ helpModalOpen }: CalculatorProps) => {
   const [display, setDisplay] = useState('');
-  const [validButton, setValidButton] = useState(true);
+  const [displayFocused, setDisplayFocused] = useState(false);
+  const { setIsInvalidExpression, setErrorMessage } = useErrorMessageContext();
 
-  const handleClick = (e: React.BaseSyntheticEvent<MouseEvent>) => {
-    // e.preventDefault;
+  const handleCalculate = useCallback(() => {
+    const result = calculate(display);
 
-    const buttonValue = e.target.value;
+    if (!display) {
+      return;
+    }
 
-    switch (checkButtonValueType(buttonValue)) {
-      case 'number':
-        // TODO: add to equation stack
-        setDisplay(prevDisplay => prevDisplay + buttonValue);
-        break;
-      case 'operator':
-        // TODO: add to equation stack
-        setDisplay(prevDisplay => prevDisplay + buttonValue);
-        break;
-      case 'decimal':
-        // TODO: check stack for digits to left and right
-        setDisplay(prevDisplay => prevDisplay + buttonValue);
-        break;
-      case 'parens':
-        // TODO: check stack for valid parens
-        setDisplay(prevDisplay => prevDisplay + buttonValue);
-        break;
-      case 'del':
-        setDisplay(prevDisplay => prevDisplay.slice(0, prevDisplay.length - 1));
-        break;
-      case 'clear':
-        setDisplay('');
-        break;
-      default:
-        console.log('~ BUTTON VALUE NOT FOUND');
+    if (typeof result === 'string') {
+      setIsInvalidExpression(true);
+      setErrorMessage(result);
+    } else {
+      setDisplay(result.toString());
+    }
+  }, [display, setIsInvalidExpression, setErrorMessage]);
+
+  const handleClick = (event: React.BaseSyntheticEvent<MouseEvent>) => {
+    const buttonValue = event.target.value;
+
+    if (buttonValue === '=') {
+      handleCalculate();
+    } else if (buttonValue === 'clear') {
+      setDisplay('');
+    } else if (buttonValue === 'del') {
+      setDisplay(prevDisplay => prevDisplay.slice(0, prevDisplay.length - 1));
+    } else {
+      setDisplay(prevDisplay => prevDisplay + buttonValue);
     }
   };
 
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      const keyValue = event.key;
+
+      if (helpModalOpen) {
+        return;
+      }
+
+      if (checkValidInputValue(keyValue) && !displayFocused) {
+        if (['=', 'Enter'].includes(keyValue)) {
+          handleCalculate();
+        } else if (keyValue === 'Escape') {
+          setDisplay('');
+        } else if (keyValue === 'Backspace') {
+          setDisplay(prevDisplay =>
+            prevDisplay.slice(0, prevDisplay.length - 1)
+          );
+        } else {
+          setDisplay(prevDisplay => prevDisplay + keyValue);
+        }
+      }
+
+      if (keyValue === 'Enter' && displayFocused) {
+        handleCalculate();
+      } else if (keyValue === 'Escape') {
+        setDisplay('');
+      }
+    },
+    [displayFocused, handleCalculate, helpModalOpen]
+  );
+
   useEffect(() => {
-    console.log('~ display', display);
-  }, [display]);
+    const validatedDisplay = filterInput(display);
+
+    if (!display) {
+      setIsInvalidExpression(false);
+    }
+
+    if (typeof validatedDisplay === 'string') {
+      setIsInvalidExpression(true);
+      setErrorMessage(validatedDisplay);
+    } else {
+      setIsInvalidExpression(false);
+    }
+  }, [display, setDisplay, setIsInvalidExpression, setErrorMessage]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   return (
     <div className="calculator">
-      <Display currDisplay={display} setDisplay={setDisplay} />
-      <Controls handleClick={handleClick} valid={validButton} />
-      {/* <Controls valid={validButton} setDisplay={setDisplay} handleClick={handleClick} /> */}
+      <Display
+        currDisplay={display}
+        setDisplay={setDisplay}
+        setDisplayFocused={setDisplayFocused}
+      />
+      <Controls display={display} handleClick={handleClick} />
     </div>
   );
 };

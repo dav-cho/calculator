@@ -19,6 +19,10 @@
     background-color: lightblue;
   }
 
+  &:active {
+    background-color: darkgray;
+  }
+
   &.valid {
     &:hover {
       background-color: lightgreen;

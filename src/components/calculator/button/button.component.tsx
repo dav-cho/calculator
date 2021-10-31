@@ -1,16 +1,53 @@
+import { useState } from 'react';
+
+import { filterInput } from '../calculator';
+
 import './button.styles.scss';
 
 interface ButtonProps {
   name: string;
-  value?: string | number;
-  valid?: boolean;
-  handleClick?: React.MouseEventHandler;
-  // setDisplay?: React.Dispatch<React.SetStateAction<string>>;
+  value: string;
+  display: string;
+  handleClick: React.MouseEventHandler;
 }
 
-export const Button = ({ name, valid, handleClick, ...otherProps }: ButtonProps) => {
+export const Button = ({
+  name,
+  value,
+  display,
+  handleClick,
+  ...otherProps
+}: ButtonProps) => {
+  const [valid, setValid] = useState(true);
+
+  const validateButton = (buttonValue: string) => {
+    const nextPossibleDisplay = display + buttonValue;
+    const filteredNextPossibleDisplay = filterInput(nextPossibleDisplay);
+    const lastCharacter = display[display.length - 1];
+
+    if (
+      ['del', 'clear', '='].includes(buttonValue) ||
+      lastCharacter === '('
+    ) {
+      return;
+    }
+
+    if (!Array.isArray(filteredNextPossibleDisplay)) {
+      setValid(false);
+    } else {
+      setValid(true);
+    }
+  };
+
   return (
-    <button className={valid ? 'button valid' : 'button invalid'} onClick={handleClick} {...otherProps}>
+    <button
+      value={value}
+      className={valid ? 'button valid' : 'button invalid'}
+      onClick={handleClick}
+      onMouseEnter={() => validateButton(value)}
+      onMouseLeave={() => validateButton(value)}
+      {...otherProps}
+    >
       {name}
     </button>
   );
