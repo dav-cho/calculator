@@ -1,7 +1,6 @@
 import { useErrorMessageContext } from '../../contexts/error-message.context';
 
 import { ReactComponent as ErrorIcon } from '../../assets/error-icon.svg';
-
 import './error-message.styles.scss';
 
 export const ErrorMessage = () => {

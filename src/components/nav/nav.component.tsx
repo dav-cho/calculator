@@ -7,6 +7,8 @@ interface NavProps {
 }
 
 export const Nav = ({ setHelpModalOpen }: NavProps) => {
+  // Ref is used here to unfocus a link after clicking
+  // to allow keyboard controls like 'Enter'
   const helpLinkRef = useRef<HTMLAnchorElement>(null);
 
   const openHelpModal = (event: React.MouseEvent<HTMLAnchorElement>) => {

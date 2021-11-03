@@ -18,7 +18,6 @@ export const Display = ({
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let displayValue = event.target.value;
 
-    displayValue = displayValue.replace(' ', '');
     setDisplay(displayValue);
   };
 

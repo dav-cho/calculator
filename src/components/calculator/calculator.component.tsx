@@ -18,6 +18,8 @@ export const Calculator = ({ helpModalOpen }: CalculatorProps) => {
   const [displayFocused, setDisplayFocused] = useState(false);
   const { setIsInvalidExpression, setErrorMessage } = useErrorMessageContext();
 
+  // Running the calculate function in seperate function since it is used
+  // in both handleClick events and handleKeyDown events
   const handleCalculate = useCallback(() => {
     const result = calculate(display);
 
@@ -51,6 +53,7 @@ export const Calculator = ({ helpModalOpen }: CalculatorProps) => {
     (event: KeyboardEvent) => {
       const keyValue = event.key;
 
+      // Ignore handling key presses when the help modal is open.
       if (helpModalOpen) {
         return;
       }
@@ -69,6 +72,7 @@ export const Calculator = ({ helpModalOpen }: CalculatorProps) => {
         }
       }
 
+      // Handle edge cases when the input is not focused
       if (keyValue === 'Enter' && displayFocused) {
         handleCalculate();
       } else if (keyValue === 'Escape') {
@@ -78,6 +82,8 @@ export const Calculator = ({ helpModalOpen }: CalculatorProps) => {
     [displayFocused, handleCalculate, helpModalOpen]
   );
 
+  // Checking and validating display on every change in order to
+  // update error message and relevant styling
   useEffect(() => {
     const validatedDisplay = filterInput(display);
 

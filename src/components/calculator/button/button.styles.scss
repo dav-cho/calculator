@@ -8,25 +8,18 @@
   height: 3rem;
 
   border-style: solid;
-  // border: none;
   border-radius: 0.5em;
 
   background-color: lightgray;
   cursor: pointer;
 
-  // change classes to just 'button' for valid and 'button invalid' for invalid?
   &:hover {
     background-color: lightblue;
+      background-color: lightgreen;
   }
 
   &:active {
     background-color: darkgray;
-  }
-
-  &.valid {
-    &:hover {
-      background-color: lightgreen;
-    }
   }
 
   &.invalid {
